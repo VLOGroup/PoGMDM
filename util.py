@@ -1,7 +1,6 @@
 import math
 import unittest
 
-import pad2d_op
 import pytorch_wavelets as pwt
 import torch as th
 import torch.nn.functional as F
@@ -234,88 +233,6 @@ def _compute_padding(kernel_size: list[int]) -> list[int]:
     return out_padding
 
 
-def filter2d(
-    input: th.Tensor,
-    kernel: th.Tensor,
-    border_type: str = 'reflect',
-    normalized: bool = False
-) -> th.Tensor:
-    b, c, h, w = input.shape
-    tmp_kernel = kernel.unsqueeze(1).to(input)
-    tmp_kernel = tmp_kernel.expand(-1, c, -1, -1)
-
-    height, width = tmp_kernel.shape[-2:]
-    padding_shape = _compute_padding([height, width])
-    input_pad = pad2d_op.pad2d(input, padding_shape, mode=border_type)
-
-    tmp_kernel = tmp_kernel.reshape(-1, 1, height, width)
-    output = tf.conv2d(
-        input_pad, tmp_kernel, groups=tmp_kernel.size(0), padding=0, stride=1
-    )
-    return output.view(b, c, h, w)
-
-
-def filter2d_T(
-    input: th.Tensor,
-    kernel: th.Tensor,
-    border_type: str = 'reflect',
-    normalized: bool = False
-) -> th.Tensor:
-    b, c, h, w = input.shape
-    tmp_kernel = kernel.unsqueeze(1).to(input)
-    tmp_kernel = tmp_kernel.expand(-1, c, -1, -1)
-
-    height, width = tmp_kernel.shape[-2:]
-    tmp_kernel = tmp_kernel.reshape(-1, 1, height, width)
-    output = tf.conv_transpose2d(
-        input, tmp_kernel, groups=tmp_kernel.size(0), padding=0, stride=1
-    )
-    padding_shape = _compute_padding([height, width])
-    input_pad = pad2d_op.pad2dT(output, padding_shape, mode=border_type)
-
-    return input_pad.view(b, c, h, w)
-
-
-def downscale_T(
-    input: th.Tensor,
-    border_type: str = 'reflect',
-    align_corners: bool = False
-) -> th.Tensor:
-    kernel = _get_gauss_kernel().cuda()
-    *_, height, width = input.shape
-    x_up: th.Tensor = tf.interpolate(
-        input, size=(height * 2, width * 2), mode='nearest'
-    )
-    x_blur = filter2d_T(x_up, kernel, border_type)
-    return x_blur / 4
-
-
-def downscale(input: th.Tensor, align_corners: bool = False) -> th.Tensor:
-    kernel = _get_gauss_kernel().to(input)
-    *_, height, width = input.shape
-    x_blur = filter2d(input, kernel)
-    out: th.Tensor = tf.interpolate(
-        x_blur,
-        size=(height // 2, width // 2),
-        mode='bilinear',
-        align_corners=align_corners
-    )
-    return out
-
-
-def gauss_pyramid(input: th.Tensor,
-                  levels: int,
-                  align_corners: bool = False) -> list[th.Tensor]:
-    pyramid = [input.clone()]
-
-    for _ in range(levels - 1):
-        img_curr = pyramid[-1]
-        img_down = downscale(img_curr, align_corners)
-        pyramid.append(img_down)
-
-    return pyramid
-
-
 def psnr(x, y):
     return th.mean(20 * th.log10(1 / th.sqrt(th.mean((x - y)**2,
                                                      (1, 2, 3))))).item()
@@ -402,15 +319,3 @@ class SSIM(th.nn.Module):
             return S.mean()
         else:
             return S
-
-
-class AdjointTest(unittest.TestCase):
-    def test_adjoint_down_up(self):
-        dtype = th.double
-        N, C, H, W = 20, 1, 20, 20
-        scale = 2
-        x = th.rand((N, C, H, W), dtype=dtype).cuda()
-        y = th.rand((N, C, H // scale, W // scale), dtype=dtype).cuda()
-        sp1 = th.sum(scale**2 * downscale(x) * y)
-        sp2 = th.sum(x * downscale_T(y))
-        self.assertTrue(th.allclose(sp1, sp2))
