@@ -1,4 +1,4 @@
-![Product of Gaussian Mixture Diffusion Models](./assets/sketch.png)
+![Product of Gaussian Mixture Diffusion Models](./assets/pogmdm.png)
 
 # Product of Gaussian Mixture Diffusion Models
 This repository contains training and evaluation code of [Product of Gaussian Mixture Diffusion Models](https://arxiv.org/abs/2310.12653).
