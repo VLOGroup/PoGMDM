@@ -67,21 +67,17 @@ plt.imshow(P.cpu().numpy(), cmap='gray')
 plt.axis('off')
 plt.colorbar()
 plt.tight_layout()
-plt.savefig('./out/shearlets/figures/P_init.pdf')
 plt.figure()
 plt.stem(R.h.detach().cpu().numpy(), basefmt=' ', linefmt='k', markerfmt='ko')
 plt.tight_layout()
-plt.savefig('./out/shearlets/figures/h_learned.pdf')
 plt.figure()
 plt.stem(h_.cpu().numpy(), basefmt=' ', linefmt='k', markerfmt='ko')
 plt.tight_layout()
-plt.savefig('./out/shearlets/figures/h_init.pdf')
 plt.figure()
 plt.imshow(R.P.detach().cpu().numpy(), cmap='gray')
 plt.axis('off')
 plt.colorbar()
 plt.tight_layout()
-plt.savefig('./out/shearlets/figures/P_learned.pdf')
 plt.rcParams.update({
     'font.size': 10,
 })
@@ -182,5 +178,4 @@ for j in range(2):
 for fig, title in zip([fig_sh, fig_shtd, fig_pot],
                       ['spectrum', 'time', 'potentials']):
     fig.tight_layout()
-    fig.savefig(f'./out/shearlets/figures/{title}.pdf')
 plt.show()

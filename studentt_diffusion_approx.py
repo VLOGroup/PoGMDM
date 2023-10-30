@@ -68,5 +68,4 @@ for t in [.1, 1, 3]:
         ax.plot(x, -np.log(approx), markevery=200)
     if t == .1:
         ax.legend(['\\( f_X \\)', '\\( f_{{Y_t}} \\)'] + [f'\\( f_{{Y_t}}^{{{N}}} \\)' for N in Ns])
-    plt.savefig(f'./out/studentt_diffusion_approx_{t:.1f}.pdf', bbox_inches='tight', pad_inches=0)
-    plt.show()
+plt.show()

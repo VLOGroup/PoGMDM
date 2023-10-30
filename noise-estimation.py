@@ -101,7 +101,6 @@ ax.set_ylabel('\\( \\sqrt{2t} \\)')
 ax.set_zlabel(
     '\\( \\mathbb{E}_{p\\sim f_X,\\eta\\sim\\mathcal{N}(0, \\mathrm{Id})} l_\\theta(p + \\sigma\\eta, t) \\)'
 )
-plt.savefig('estimation.pdf')
 
 monochrome = (
     cycler('color', ['k']) * cycler('marker', ['', '.']) *
@@ -133,5 +132,4 @@ ax.set_xlabel('\\( \\sqrt{2t} \\)')
 ax.set_ylabel(
     '\\( \\mathbb{E}_{p\\sim f_X,\\eta\\sim\\mathcal{N}(0, \\mathrm{Id})} l_\\theta(p + \\sigma\\eta, t) \\)'
 )
-plt.savefig('energy_plot.pdf')
-# plt.show()
+plt.show()

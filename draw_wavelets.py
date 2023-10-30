@@ -126,7 +126,6 @@ for wave, ylims_f in zip(['db2', 'db4'], ylimss_f):
     for fig, name in zip([fig_f, fig_fp, fig_tweedie],
                          ['pot', 'act', 'tweedie']):
         fig.tight_layout()
-        fig.savefig(f'./out/wavelets/{wave}/figures/{name}.pdf')
 
     h = R.h.detach()
     g = R.get_highpass(h)
@@ -143,11 +142,9 @@ for wave, ylims_f in zip(['db2', 'db4'], ylimss_f):
     plt.plot(x, np.flip(psi_d), 'k-')
     plt.legend(['$\\phi$', '$\\omega$'])
     plt.title('Learned')
-    plt.savefig(f'./out/wavelets/{wave}/figures/learned_phi_psi.pdf')
     plt.figure()
     plt.stem(np.flip(h_list), basefmt=' ', linefmt='k', markerfmt='ko')
     plt.title('Learned')
-    plt.savefig(f'./out/wavelets/{wave}/figures/learned_h.pdf')
 
     wavelet = pywt.Wavelet(wave)
     h_ = wavelet.dec_lo
@@ -157,11 +154,9 @@ for wave, ylims_f in zip(['db2', 'db4'], ylimss_f):
     plt.plot(x, psi, 'k-')
     plt.legend(['$\\phi$', '$\\omega$'])
     plt.title(f'\\texttt{{{wave}}}')
-    plt.savefig(f'./out/wavelets/{wave}/figures/{wave}_phi_psi.pdf')
     plt.figure()
     plt.stem(h_, basefmt=' ', linefmt='k', markerfmt='ko')
     plt.title(f'\\texttt{{{wave}}}')
-    plt.savefig(f'./out/wavelets/{wave}/figures/{wave}_h.pdf')
 
     plt.rcParams.update({
         'font.size': 10,

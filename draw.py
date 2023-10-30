@@ -167,8 +167,4 @@ for R, name in zip([R_gmm, R_gsm], ['gmm', 'gsm']):
             fontsize=8
         )
 
-    fig_f.savefig(f'./out/{name}/plots/f.pdf')
-    fig_fp.savefig(f'./out/{name}/plots/fp.pdf')
-    fig_k.savefig(f'./out/{name}/plots/k.pdf')
-    fig_h.savefig(f'./out/{name}/plots/h.pdf')
 plt.show()
